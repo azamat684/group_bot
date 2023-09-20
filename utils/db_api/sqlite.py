@@ -2,7 +2,7 @@ import sqlite3
 
 
 class Database:
-    def __init__(self, path_to_db="main.db"):
+    def __init__(self, path_to_db="C:/Users/Kazbek/Desktop/MY AIOGRAM BOTS/group_bot/data/main.db"):
         self.path_to_db = path_to_db
 
     @property
@@ -38,6 +38,27 @@ class Database:
 """
         self.execute(sql, commit=True)
 
+    def create_table_channels(self):
+        sql = """
+        CREATE TABLE Channels (
+            id PRIMARY KEY,
+            channel_id INTEGER NOT NULL UNIQUE,
+            title VARCHAR(255) NOT NULL,
+            username VARCHAR(255)
+            );
+"""
+        self.execute(sql, commit=True)
+    
+    def create_table_groups(self):
+        sql = """
+        CREATE TABLE Groups (
+            id PRIMARY KEY,
+            group_id NOT NULL UNIQUE,
+            title VARCHAR(255) NOT NULL
+            );
+"""
+        self.execute(sql, commit=True)
+        
     @staticmethod
     def format_args(sql, parameters: dict):
         sql += " AND ".join([
@@ -52,7 +73,20 @@ class Database:
         INSERT INTO Users(id, Name, language) VALUES(?, ?, ?)
         """
         self.execute(sql, parameters=(id, name,language), commit=True)
-
+        
+    def add_channel(self, channel_id: int, title: str, username: str):
+        sql = """
+        INSERT INTO Channels(channel_id, title, username) VALUES(?, ?, ?)
+        """
+        self.execute(sql, parameters=(channel_id, title, username), commit=True)
+    
+    def add_group(self, group_id: int, title: str):
+        sql = """
+        INSERT INTO Groups(group_id, title) VALUES(?, ?)
+        """
+        self.execute(sql, parameters=(group_id, title), commit=True)
+        
+         
     def select_all_users(self):
         sql = """
         SELECT * FROM Users

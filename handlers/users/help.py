@@ -3,8 +3,8 @@ from aiogram.dispatcher.filters.builtin import CommandHelp
 
 from loader import dp
 from aiogram.dispatcher import FSMContext
-
-@dp.message_handler(CommandHelp(),state="*")
+from filters import IsPrivate
+@dp.message_handler(IsPrivate(), CommandHelp(),state="*")
 async def bot_help(message: types.Message,state="*"):
         await state.finish()
         text = ("Buyruqlar: ",

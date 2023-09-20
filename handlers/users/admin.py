@@ -6,8 +6,8 @@ import pandas as pd
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from states.state import Reklama
 from aiogram.dispatcher import FSMContext
-
-@dp.message_handler(text="/allusers", user_id=ADMINS)
+from filters import IsPrivate
+@dp.message_handler(IsPrivate(),text="/allusers", user_id=ADMINS)
 async def get_all_users(message: types.Message):
     users = db.select_all_users()
     id = []
@@ -23,13 +23,13 @@ async def get_all_users(message: types.Message):
     else:
        await bot.send_message(message.chat.id, df)
        
-@dp.message_handler(text="/reklama", user_id=ADMINS, state="*")
+@dp.message_handler(IsPrivate(),text="/reklama", user_id=ADMINS, state="*")
 async def optional_ad(message: types.Message, state: FSMContext):
     await state.finish()
     await message.answer(text="Menga reklama uchun ixtiyoriy xabar jo'nating va men uni foydalanuvchilarga jo'nataman.")
     await Reklama.optional_reklama.set()
 
-@dp.message_handler(state=Reklama.optional_reklama)
+@dp.message_handler(IsPrivate(),state=Reklama.optional_reklama)
 async def send_optional_ad(message: types.Message, state: FSMContext):
     users = db.select_all_users()
     for user in users:
@@ -52,12 +52,12 @@ async def send_optional_ad(message: types.Message, state: FSMContext):
 #             await message.answer(f"<b>{user[1]}</b> botni bloklagani uchun unga xabar bormadi 😭")
 
 
-@dp.message_handler(text="/count",user_id = ADMINS)
+@dp.message_handler(IsPrivate(),text="/count",user_id = ADMINS)
 async def count(message: types.Message):
     user_count = db.count_users()[0]
     await message.answer(f"Bazada <b>{user_count}</b> da foydalanuvchi bor")
 
-@dp.message_handler(text="/cleandb", user_id=ADMINS)
+@dp.message_handler(IsPrivate(),text="/cleandb", user_id=ADMINS)
 async def get_all_users(message: types.Message):
     db.delete_users()
     await message.answer("Baza tozalandi!")
