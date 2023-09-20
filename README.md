@@ -1,2 +1,2 @@
 # group_bot
-gruhda ishlaydigan bot
+Ushbu bot yordamida siz o'z gruhingizni boshqarish oson boladi
